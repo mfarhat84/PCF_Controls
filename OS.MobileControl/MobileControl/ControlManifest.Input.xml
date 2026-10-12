@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <!--
+    OS.MobileControl v2 — fusion :
+      • interface d'OS.Mobile (sélecteur de pays avec drapeaux + recherche)
+      • logique/configuration de CheckPhoneNumberControl (pays/types autorisés, format, champ "valide", click-to-call)
+    Namespace + constructeur conservés pour permettre une mise à jour en place d'OS.MobileControl v1.
+  -->
+  <control namespace="OS" constructor="MobileControl" version="2.0.0" display-name-key="MobileControl" description-key="MobileControl_Desc" control-type="standard">
+    <external-service-usage enabled="false">
+    </external-service-usage>
+
+    <type-group name="phone">
+      <type>SingleLine.Phone</type>
+      <type>SingleLine.Text</type>
+    </type-group>
+
+    <!-- ── Données ─────────────────────────────────────────────────────────── -->
+    <property name="phoneValue" display-name-key="Phone_Value" description-key="Phone_Value_Desc"
+              of-type-group="phone" usage="bound" required="true" />
+
+    <property name="numberValid" display-name-key="NumberValid" description-key="NumberValid_Desc"
+              of-type="TwoOptions" usage="bound" required="false" />
+
+    <!-- ── Format & pays ───────────────────────────────────────────────────── -->
+    <property name="outputFormat" display-name-key="OutputFormat" description-key="OutputFormat_Desc"
+              of-type="Enum" usage="input" required="true" default-value="e164">
+      <value name="e164" display-name-key="OutputFormat_E164" description-key="OutputFormat_E164">e164</value>
+      <value name="international" display-name-key="OutputFormat_International" description-key="OutputFormat_International">international</value>
+      <value name="national" display-name-key="OutputFormat_National" description-key="OutputFormat_National">national</value>
+    </property>
+
+    <property name="defaultCountry" display-name-key="DefaultCountry" description-key="DefaultCountry_Desc"
+              of-type="SingleLine.Text" usage="input" required="false" />
+    <property name="priorityCountries" display-name-key="PriorityCountries" description-key="PriorityCountries_Desc"
+              of-type="SingleLine.Text" usage="input" required="false" default-value="AE,SA,KW,BH,QA,OM,JO,EG,LB,IQ" />
+    <property name="allowedCountries" display-name-key="AllowedCountries" description-key="AllowedCountries_Desc"
+              of-type="SingleLine.Text" usage="input" required="false" />
+    <property name="excludedCountries" display-name-key="ExcludedCountries" description-key="ExcludedCountries_Desc"
+              of-type="SingleLine.Text" usage="input" required="false" />
+
+    <!-- ── Types de numéro ─────────────────────────────────────────────────── -->
+    <property name="allowedTypes" display-name-key="AllowedTypes" description-key="AllowedTypes_Desc"
+              of-type="SingleLine.Text" usage="input" required="false" />
+    <property name="excludedTypes" display-name-key="ExcludedTypes" description-key="ExcludedTypes_Desc"
+              of-type="SingleLine.Text" usage="input" required="false" />
+
+    <!-- ── Comportement ────────────────────────────────────────────────────── -->
+    <property name="blockSaveWhenInvalid" display-name-key="BlockSave" description-key="BlockSave_Desc"
+              of-type="Enum" usage="input" required="true" default-value="Yes">
+      <value name="Yes" display-name-key="Yes" description-key="Yes">Yes</value>
+      <value name="No" display-name-key="No" description-key="No">No</value>
+    </property>
+
+    <property name="showFlags" display-name-key="ShowFlags" description-key="ShowFlags_Desc"
+              of-type="Enum" usage="input" required="true" default-value="Yes">
+      <value name="Yes" display-name-key="Yes" description-key="Yes">Yes</value>
+      <value name="No" display-name-key="No" description-key="No">No</value>
+    </property>
+
+    <!-- ── Click to call ───────────────────────────────────────────────────── -->
+    <property name="callProvider" display-name-key="CallProvider" description-key="CallProvider_Desc"
+              of-type="Enum" usage="input" required="true" default-value="none">
+      <value name="none" display-name-key="CallProvider_None" description-key="CallProvider_None">none</value>
+      <value name="tel" display-name-key="CallProvider_Tel" description-key="CallProvider_Tel">tel</value>
+      <value name="teams" display-name-key="CallProvider_Teams" description-key="CallProvider_Teams">teams</value>
+      <value name="skype" display-name-key="CallProvider_Skype" description-key="CallProvider_Skype">skype</value>
+      <value name="custom" display-name-key="CallProvider_Custom" description-key="CallProvider_Custom">custom</value>
+    </property>
+    <property name="customCallProtocol" display-name-key="CustomCallProtocol" description-key="CustomCallProtocol_Desc"
+              of-type="SingleLine.Text" usage="input" required="false" />
+    <property name="openQuickCreate" display-name-key="OpenQuickCreate" description-key="OpenQuickCreate_Desc"
+              of-type="Enum" usage="input" required="true" default-value="No">
+      <value name="Yes" display-name-key="Yes" description-key="Yes">Yes</value>
+      <value name="No" display-name-key="No" description-key="No">No</value>
+    </property>
+
+    <resources>
+      <code path="index.ts" order="1"/>
+      <css path="components/MobileInput.css" order="1" />
+      <resx path="strings/MobileControl.1033.resx" version="1.0.0" />
+      <resx path="strings/MobileControl.1036.resx" version="1.0.0" />
+    </resources>
+  </control>
+</manifest>

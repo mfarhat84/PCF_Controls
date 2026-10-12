@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="MobileControl" xml:space="preserve"><value>Numéro de téléphone (international)</value></data>
+  <data name="MobileControl_Desc" xml:space="preserve"><value>Saisie de téléphone avec sélecteur de pays, validation (libphonenumber-js), règles pays/types et click-to-call.</value></data>
+  <data name="Phone_Value" xml:space="preserve"><value>Numéro de téléphone</value></data>
+  <data name="Phone_Value_Desc" xml:space="preserve"><value>Colonne Téléphone ou Texte qui stocke le numéro.</value></data>
+  <data name="NumberValid" xml:space="preserve"><value>Numéro valide (Oui/Non)</value></data>
+  <data name="NumberValid_Desc" xml:space="preserve"><value>Colonne Oui/Non facultative, mise à Oui si le numéro est valide (ou vide). Utilisable dans les règles métier ou les flux.</value></data>
+  <data name="OutputFormat" xml:space="preserve"><value>Format enregistré</value></data>
+  <data name="OutputFormat_Desc" xml:space="preserve"><value>Format dans lequel un numéro valide est écrit dans la colonne.</value></data>
+  <data name="OutputFormat_E164" xml:space="preserve"><value>E.164 (+33612345678)</value></data>
+  <data name="OutputFormat_International" xml:space="preserve"><value>International (+33 6 12 34 56 78)</value></data>
+  <data name="OutputFormat_National" xml:space="preserve"><value>National (06 12 34 56 78)</value></data>
+  <data name="DefaultCountry" xml:space="preserve"><value>Pays par défaut</value></data>
+  <data name="DefaultCountry_Desc" xml:space="preserve"><value>Code ISO 3166 alpha-2 (ex. FR) sélectionné pour un champ vide et utilisé pour lire les numéros nationaux.</value></data>
+  <data name="PriorityCountries" xml:space="preserve"><value>Pays affichés en premier</value></data>
+  <data name="PriorityCountries_Desc" xml:space="preserve"><value>Codes ISO séparés par des virgules, affichés en tête de liste (ex. FR,BE,CH).</value></data>
+  <data name="AllowedCountries" xml:space="preserve"><value>Pays autorisés</value></data>
+  <data name="AllowedCountries_Desc" xml:space="preserve"><value>Codes ISO séparés par des virgules. Vide = tous les pays. Filtre aussi la liste.</value></data>
+  <data name="ExcludedCountries" xml:space="preserve"><value>Pays exclus</value></data>
+  <data name="ExcludedCountries_Desc" xml:space="preserve"><value>Codes ISO séparés par des virgules, refusés et masqués dans la liste.</value></data>
+  <data name="AllowedTypes" xml:space="preserve"><value>Types de numéro autorisés</value></data>
+  <data name="AllowedTypes_Desc" xml:space="preserve"><value>Séparés par des virgules : mobile, fixed_line, toll_free, premium_rate, shared_cost, voip, personal_number, pager, uan, voicemail. Vide = tous.</value></data>
+  <data name="ExcludedTypes" xml:space="preserve"><value>Types de numéro exclus</value></data>
+  <data name="ExcludedTypes_Desc" xml:space="preserve"><value>Types de numéro refusés, séparés par des virgules (mêmes valeurs que les types autorisés).</value></data>
+  <data name="BlockSave" xml:space="preserve"><value>Bloquer l'enregistrement si invalide</value></data>
+  <data name="BlockSave_Desc" xml:space="preserve"><value>Affiche une notification sur le champ qui empêche l'enregistrement tant que le numéro est invalide.</value></data>
+  <data name="ShowFlags" xml:space="preserve"><value>Afficher les drapeaux</value></data>
+  <data name="ShowFlags_Desc" xml:space="preserve"><value>Les drapeaux viennent de flagcdn.com. Choisir Non si ce site est bloqué : le code ISO est affiché à la place.</value></data>
+  <data name="CallProvider" xml:space="preserve"><value>Bouton d'appel</value></data>
+  <data name="CallProvider_Desc" xml:space="preserve"><value>Affiche un bouton d'appel qui ouvre le service choisi.</value></data>
+  <data name="CallProvider_None" xml:space="preserve"><value>Aucun</value></data>
+  <data name="CallProvider_Tel" xml:space="preserve"><value>Téléphone (tel:)</value></data>
+  <data name="CallProvider_Teams" xml:space="preserve"><value>Microsoft Teams</value></data>
+  <data name="CallProvider_Skype" xml:space="preserve"><value>Skype</value></data>
+  <data name="CallProvider_Custom" xml:space="preserve"><value>Protocole personnalisé</value></data>
+  <data name="CustomCallProtocol" xml:space="preserve"><value>Protocole d'appel personnalisé</value></data>
+  <data name="CustomCallProtocol_Desc" xml:space="preserve"><value>Utilisé si Bouton d'appel = Personnalisé, ex. callto ou sip.</value></data>
+  <data name="OpenQuickCreate" xml:space="preserve"><value>Ouvrir la création rapide d'appel</value></data>
+  <data name="OpenQuickCreate_Desc" xml:space="preserve"><value>Au clic sur le bouton d'appel, ouvre aussi la création rapide d'un appel téléphonique (applications pilotées par modèle).</value></data>
+  <data name="Yes" xml:space="preserve"><value>Oui</value></data>
+  <data name="No" xml:space="preserve"><value>Non</value></data>
+  <data name="Err_TooShort" xml:space="preserve"><value>Numéro trop court</value></data>
+  <data name="Err_TooLong" xml:space="preserve"><value>Numéro trop long</value></data>
+  <data name="Err_Invalid" xml:space="preserve"><value>Numéro invalide pour : {0}</value></data>
+  <data name="Err_InvalidGeneric" xml:space="preserve"><value>Numéro de téléphone invalide</value></data>
+  <data name="Err_CountryNotAllowed" xml:space="preserve"><value>Les numéros de ce pays ne sont pas autorisés</value></data>
+  <data name="Err_TypeNotAllowed" xml:space="preserve"><value>Ce type de numéro n'est pas autorisé</value></data>
+  <data name="Ui_Search" xml:space="preserve"><value>Rechercher un pays...</value></data>
+  <data name="Ui_NoResults" xml:space="preserve"><value>Aucun résultat</value></data>
+  <data name="Ui_Call" xml:space="preserve"><value>Appeler</value></data>
+  <data name="Ui_Valid" xml:space="preserve"><value>Numéro valide</value></data>
+</root>
