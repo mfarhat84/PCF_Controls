@@ -16,7 +16,13 @@
   <data name="OutputFormat_International" xml:space="preserve"><value>International (+33 6 12 34 56 78)</value></data>
   <data name="OutputFormat_National" xml:space="preserve"><value>National (06 12 34 56 78)</value></data>
   <data name="DefaultCountry" xml:space="preserve"><value>Pays par défaut</value></data>
-  <data name="DefaultCountry_Desc" xml:space="preserve"><value>Code ISO 3166 alpha-2 (ex. FR) sélectionné pour un champ vide et utilisé pour lire les numéros nationaux.</value></data>
+  <data name="DefaultCountry_Desc" xml:space="preserve"><value>Pays par défaut fixe : code ISO (FR), indicatif (+33) ou nom (France). Utilisé en dernier, après la colonne et la recherche.</value></data>
+  <data name="DefaultCountryColumn" xml:space="preserve"><value>Pays par défaut — colonne</value></data>
+  <data name="DefaultCountryColumn_Desc" xml:space="preserve"><value>Colonne texte ou choix facultative de cette table contenant le pays (FR, +33 ou France). Mise à jour en direct si la colonne change.</value></data>
+  <data name="CountryLookup" xml:space="preserve"><value>Pays par défaut — recherche</value></data>
+  <data name="CountryLookup_Desc" xml:space="preserve"><value>Colonne de recherche facultative de cette table. Le chemin pays est alors lu sur l'enregistrement lié.</value></data>
+  <data name="CountryPath" xml:space="preserve"><value>Pays par défaut — chemin</value></data>
+  <data name="CountryPath_Desc" xml:space="preserve"><value>Noms logiques séparés par des points, ex. address1_country ou parentcustomerid.address1_country. Part de l'enregistrement de la recherche si renseignée, sinon de l'enregistrement courant (table détectée automatiquement, données enregistrées).</value></data>
   <data name="PriorityCountries" xml:space="preserve"><value>Pays affichés en premier</value></data>
   <data name="PriorityCountries_Desc" xml:space="preserve"><value>Codes ISO séparés par des virgules, affichés en tête de liste (ex. FR,BE,CH).</value></data>
   <data name="AllowedCountries" xml:space="preserve"><value>Pays autorisés</value></data>

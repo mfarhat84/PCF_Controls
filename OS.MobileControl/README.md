@@ -10,7 +10,8 @@ Contrôle PCF de saisie de téléphone pour Dataverse / Power Apps.
 | `phoneValue` | Colonne Téléphone **ou Texte** liée | — (requis) |
 | `numberValid` | Colonne Oui/Non mise à jour à chaque saisie (vide = valide) | — |
 | `outputFormat` | Format enregistré : `e164` (+33612345678), `international` (+33 6 12 34 56 78), `national` (06 12 34 56 78) | `e164` |
-| `defaultCountry` | Pays ISO présélectionné et utilisé pour lire les numéros nationaux | 1er pays de la liste |
+| `defaultCountry` | Pays par défaut fixe (`FR`, `+33` ou `France`) — voir « Pays par défaut dynamique » | 1er pays de la liste |
+| `defaultCountryColumn` / `countryLookup` / `countryPath` | Pays par défaut lu dans une colonne ou via une recherche | — |
 | `priorityCountries` | Pays affichés en tête (ISO, séparés par des virgules) | `AE,SA,KW,BH,QA,OM,JO,EG,LB,IQ` (= ordre de la v1) |
 | `allowedCountries` / `excludedCountries` | Pays acceptés / refusés — **filtrent aussi la liste** | vide = tous |
 | `allowedTypes` / `excludedTypes` | `mobile`, `fixed_line`, `toll_free`, `premium_rate`, `shared_cost`, `voip`, `personal_number`, `pager`, `uan`, `voicemail` (les noms awesome-phonenumber `fixed-line`… sont acceptés) | vide = tous |
@@ -21,6 +22,23 @@ Contrôle PCF de saisie de téléphone pour Dataverse / Power Apps.
 | `openQuickCreate` | Ouvre aussi la création rapide « Appel téléphonique » (pré-remplie) | `No` |
 
 > `fixed_line_or_mobile` (US, CA…) est accepté si `mobile` **ou** `fixed_line` est autorisé, et exclu seulement si les deux sont exclus.
+
+## Pays par défaut dynamique (v2.1)
+
+Le pays présélectionné (quand le numéro est vide) et utilisé pour lire les numéros nationaux peut venir de plusieurs sources. **La première qui donne un pays présent dans la liste l'emporte :**
+
+| Priorité | Propriété | Exemple | Remarque |
+|---|---|---|---|
+| 1 | `countryLookup` + `countryPath` | recherche `parentcustomerid`, chemin `address1_country` | Part de l'enregistrement **lié** (valeur en direct du formulaire) |
+| 1 bis | `countryPath` seul | `parentcustomerid.address1_country` | Part de l'enregistrement **courant** : la table est détectée automatiquement. Lit les données **enregistrées** |
+| 2 | `defaultCountryColumn` | colonne `address1_country` ou un choix « Pays » | Colonne texte ou choix de la table, en direct |
+| 3 | `defaultCountry` | `FR`, `+33` ou `France` | Valeur fixe |
+| 4 | — | — | 1er pays de la liste |
+
+- **Valeurs acceptées partout :** code ISO (`FR`), indicatif (`+33`, `0033`, `33`) ou nom de pays en français ou en anglais (`France`, `Allemagne`, `Germany`).
+- **Chemin :** noms *logiques* séparés par des points, autant de niveaux que nécessaire (`parentcustomerid.mf_paysid.mf_codeiso`). Les recherches Client (compte **ou** contact) sont gérées. Le dernier élément peut être un texte, un choix ou une recherche (son nom affiché est utilisé).
+- **Mise à jour à chaud :** si la recherche ou la colonne change sur le formulaire, le pays suit, tant que le numéro est vide et que l'utilisateur n'a pas choisi de pays lui-même.
+- **Prérequis :** l'utilisateur doit avoir le droit de lecture sur les tables parcourues. En cas d'erreur (droits, nom erroné), le contrôle passe simplement à la source suivante.
 
 ## Ce que la fusion corrige
 

@@ -6,9 +6,14 @@
       • logique/configuration de CheckPhoneNumberControl (pays/types autorisés, format, champ "valide", click-to-call)
     Namespace + constructeur conservés pour permettre une mise à jour en place d'OS.MobileControl v1.
   -->
-  <control namespace="OS" constructor="MobileControl" version="2.0.0" display-name-key="MobileControl" description-key="MobileControl_Desc" control-type="standard">
+  <control namespace="OS" constructor="MobileControl" version="2.1.0" display-name-key="MobileControl" description-key="MobileControl_Desc" control-type="standard">
     <external-service-usage enabled="false">
     </external-service-usage>
+
+    <type-group name="countryColumn">
+      <type>SingleLine.Text</type>
+      <type>OptionSet</type>
+    </type-group>
 
     <type-group name="phone">
       <type>SingleLine.Phone</type>
@@ -32,6 +37,14 @@
 
     <property name="defaultCountry" display-name-key="DefaultCountry" description-key="DefaultCountry_Desc"
               of-type="SingleLine.Text" usage="input" required="false" />
+    <!-- Pays par défaut dynamique (v2.1). Priorité : countryPath > defaultCountryColumn > defaultCountry -->
+    <property name="defaultCountryColumn" display-name-key="DefaultCountryColumn" description-key="DefaultCountryColumn_Desc"
+              of-type-group="countryColumn" usage="bound" required="false" />
+    <property name="countryLookup" display-name-key="CountryLookup" description-key="CountryLookup_Desc"
+              of-type="Lookup.Simple" usage="bound" required="false" />
+    <property name="countryPath" display-name-key="CountryPath" description-key="CountryPath_Desc"
+              of-type="SingleLine.Text" usage="input" required="false" />
+
     <property name="priorityCountries" display-name-key="PriorityCountries" description-key="PriorityCountries_Desc"
               of-type="SingleLine.Text" usage="input" required="false" default-value="AE,SA,KW,BH,QA,OM,JO,EG,LB,IQ" />
     <property name="allowedCountries" display-name-key="AllowedCountries" description-key="AllowedCountries_Desc"
@@ -81,5 +94,8 @@
       <resx path="strings/MobileControl.1033.resx" version="1.0.0" />
       <resx path="strings/MobileControl.1036.resx" version="1.0.0" />
     </resources>
+    <feature-usage>
+      <uses-feature name="WebAPI" required="true" />
+    </feature-usage>
   </control>
 </manifest>

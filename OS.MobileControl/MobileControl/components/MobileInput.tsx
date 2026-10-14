@@ -35,6 +35,8 @@ export interface MobileInputProps {
   disabled: boolean;
   masked: boolean;
   config: ControlConfig;
+  /** Pays par défaut calculé par le contrôle (champ, recherche ou valeur fixe) — peut changer à chaud. */
+  defaultCountry: Country;
   strings: MobileInputStrings;
   /** persist = true → la valeur doit être écrite (blur, changement de pays). false → validité seulement. */
   onResult: (result: PhoneResult, persist: boolean) => void;
@@ -88,10 +90,10 @@ const PhoneIcon = () => (
 
 // ── Composant ─────────────────────────────────────────────────────────────────
 const MobileInput: React.FC<MobileInputProps> = (props) => {
-  const { value, disabled, masked, config, strings } = props;
+  const { value, disabled, masked, config, defaultCountry, strings } = props;
 
   const initial = React.useMemo(
-    () => parseStoredValue(value, config.countries, config.defaultCountry),
+    () => parseStoredValue(value, config.countries, defaultCountry),
     []
   );
 
@@ -109,6 +111,7 @@ const MobileInput: React.FC<MobileInputProps> = (props) => {
   const searchRef   = React.useRef<HTMLInputElement>(null);
   const activeRef   = React.useRef<HTMLLIElement>(null);
   const lastValue   = React.useRef<string>(value);   // dernière valeur connue (reçue ou émise)
+  const userPickedCountry = React.useRef<boolean>(false); // l'utilisateur a choisi un pays à la main
   const propsRef    = React.useRef(props);
   propsRef.current  = props;
 
@@ -138,12 +141,18 @@ const MobileInput: React.FC<MobileInputProps> = (props) => {
     if (value === lastValue.current) return; // écho de notre propre écriture
     lastValue.current = value;
     debouncedValidate.cancel();
-    const parsed = parseStoredValue(value, config.countries, config.defaultCountry);
+    const parsed = parseStoredValue(value, config.countries, defaultCountry);
     setCountry(parsed.country);
     setText(parsed.text);
     setTouched(parsed.text !== '');
     reportValidity(parsed.text, parsed.country);
   }, [value]);
+
+  // ── Pays par défaut modifié à chaud (champ pays ou recherche changés sur le formulaire) ──
+  // Appliqué seulement si le numéro est vide et que l'utilisateur n'a pas choisi de pays lui-même.
+  React.useEffect(() => {
+    if (!userPickedCountry.current && text.trim() === '') setCountry(defaultCountry);
+  }, [defaultCountry.iso2]);
 
   // ── Validation complète + écriture (blur / changement de pays) ─────────────
   const commit = (t: string, c: Country) => {
@@ -252,6 +261,7 @@ const MobileInput: React.FC<MobileInputProps> = (props) => {
   }
 
   const selectCountry = (c: Country) => {
+    userPickedCountry.current = true;
     close(true);
     setCountry(c);
     if (text.trim()) commit(text, c);

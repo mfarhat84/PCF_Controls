@@ -1,11 +1,15 @@
 import { Country } from './countries';
 import { OutputFormat, Rules } from './validation';
+import { parsePath, resolveCountryCode } from './countrySource';
 
 /** Configuration lue une fois dans init() à partir des propriétés du manifest. */
 export interface ControlConfig {
   outputFormat: OutputFormat;
   countries: Country[];          // liste affichée (filtrée + ordonnée)
-  defaultCountry: Country;
+  /** Pays par défaut « statique » (propriété defaultCountry : FR, +33 ou France). */
+  staticDefaultCountry: string | null;
+  /** Chemin vers le champ pays (ex. parentcustomerid.address1_country), déjà découpé. */
+  countryPath: string[] | null;
   rules: Rules;
   blockSaveWhenInvalid: boolean;
   showFlags: boolean;
@@ -50,6 +54,7 @@ export const buildCountryList = (
 export interface RawParams {
   outputFormat?: string | null;
   defaultCountry?: string | null;
+  countryPath?: string | null;
   priorityCountries?: string | null;
   allowedCountries?: string | null;
   excludedCountries?: string | null;
@@ -68,8 +73,6 @@ export const readConfig = (p: RawParams, all: Country[]): ControlConfig => {
   const priority = splitList(p.priorityCountries, isoCode);
   const countries = buildCountryList(all, allowed, excluded, priority);
 
-  const wanted = isoCode(p.defaultCountry ?? '');
-  const defaultCountry = countries.find((c) => c.iso2 === wanted) ?? countries[0];
 
   const fmt = (p.outputFormat ?? 'e164').toLowerCase();
   const outputFormat: OutputFormat = fmt === 'international' || fmt === 'national' ? fmt : 'e164';
@@ -81,7 +84,8 @@ export const readConfig = (p: RawParams, all: Country[]): ControlConfig => {
   return {
     outputFormat,
     countries,
-    defaultCountry,
+    staticDefaultCountry: resolveCountryCode(p.defaultCountry),
+    countryPath: parsePath(p.countryPath),
     rules: {
       allowedCountries: allowed,
       excludedCountries: excluded,

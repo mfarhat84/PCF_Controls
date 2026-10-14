@@ -16,7 +16,13 @@
   <data name="OutputFormat_International" xml:space="preserve"><value>International (+33 6 12 34 56 78)</value></data>
   <data name="OutputFormat_National" xml:space="preserve"><value>National (06 12 34 56 78)</value></data>
   <data name="DefaultCountry" xml:space="preserve"><value>Default country</value></data>
-  <data name="DefaultCountry_Desc" xml:space="preserve"><value>ISO 3166 alpha-2 code (e.g. FR) selected for empty fields and used to read national numbers.</value></data>
+  <data name="DefaultCountry_Desc" xml:space="preserve"><value>Fixed default country: ISO code (FR), dial code (+33) or name (France). Used last, after the column and lookup sources.</value></data>
+  <data name="DefaultCountryColumn" xml:space="preserve"><value>Default country — column</value></data>
+  <data name="DefaultCountryColumn_Desc" xml:space="preserve"><value>Optional text or choice column of this table holding the country (FR, +33 or France). Updates live when the column changes.</value></data>
+  <data name="CountryLookup" xml:space="preserve"><value>Default country — lookup</value></data>
+  <data name="CountryLookup_Desc" xml:space="preserve"><value>Optional lookup column of this table. Country path is then read on the related record.</value></data>
+  <data name="CountryPath" xml:space="preserve"><value>Default country — path</value></data>
+  <data name="CountryPath_Desc" xml:space="preserve"><value>Logical names separated by dots, e.g. address1_country or parentcustomerid.address1_country. Starts from the lookup record if set, otherwise from the current record (table detected automatically, saved data).</value></data>
   <data name="PriorityCountries" xml:space="preserve"><value>Countries shown first</value></data>
   <data name="PriorityCountries_Desc" xml:space="preserve"><value>Comma-separated ISO codes listed at the top of the country picker (e.g. FR,BE,CH).</value></data>
   <data name="AllowedCountries" xml:space="preserve"><value>Allowed countries</value></data>

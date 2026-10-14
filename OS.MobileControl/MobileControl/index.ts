@@ -2,7 +2,8 @@ import { IInputs, IOutputs } from "./generated/ManifestTypes";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import MobileInput, { MobileInputStrings, PhoneResult } from "./components/MobileInput";
-import { countries } from "./utils/countries";
+import { Country, countries } from "./utils/countries";
+import { pickDefaultCountry, readPath, resolveCountryCode } from "./utils/countrySource";
 import { ControlConfig, readConfig } from "./utils/config";
 import { buildCallUrl } from "./utils/call";
 
@@ -27,6 +28,13 @@ interface ContextInfo {
 
 const NOTIFICATION_ID = "os-mobile-invalid";
 
+/** Vue minimale des propriétés liées optionnelles (types générés variables selon le type de colonne). */
+interface LooseProperty {
+    raw?: unknown;
+    formatted?: string;
+    attributes?: { LogicalName?: string };
+}
+
 export class MobileControl implements ComponentFramework.StandardControl<IInputs, IOutputs> {
     private _container: HTMLDivElement;
     private _notifyOutputChanged: () => void;
@@ -38,6 +46,11 @@ export class MobileControl implements ComponentFramework.StandardControl<IInputs
     private _isValid = true;         // valeur écrite dans numberValid
     private _readOnly = false;
     private _notificationShown = false;
+    private _destroyed = false;
+
+    // Pays lu via la Web API (countryPath) — résolu de façon asynchrone
+    private _pathKey = "";
+    private _pathCountry: string | null = null;
 
     constructor() { /* vide */ }
 
@@ -56,6 +69,7 @@ export class MobileControl implements ComponentFramework.StandardControl<IInputs
             {
                 outputFormat: p.outputFormat?.raw,
                 defaultCountry: p.defaultCountry?.raw,
+                countryPath: p.countryPath?.raw,
                 priorityCountries: p.priorityCountries?.raw,
                 allowedCountries: p.allowedCountries?.raw,
                 excludedCountries: p.excludedCountries?.raw,
@@ -87,11 +101,13 @@ export class MobileControl implements ComponentFramework.StandardControl<IInputs
 
         this._value = p.phoneValue.raw ?? "";
         this._isValid = p.numberValid?.raw ?? true;
+        this.refreshPathCountry();
         this.render();
     }
 
     public updateView(context: ComponentFramework.Context<IInputs>): void {
         this._context = context;
+        this.refreshPathCountry();
         this.render();
     }
 
@@ -104,12 +120,14 @@ export class MobileControl implements ComponentFramework.StandardControl<IInputs
     }
 
     public destroy(): void {
+        this._destroyed = true;
         this.clearNotification();
         ReactDOM.unmountComponentAtNode(this._container);
     }
 
     // ── Rendu ────────────────────────────────────────────────────────────────
     private render(): void {
+        if (this._destroyed) return;
         const field = this._context.parameters.phoneValue;
         let disabled = this._context.mode.isControlDisabled;
         let masked = false;
@@ -126,12 +144,71 @@ export class MobileControl implements ComponentFramework.StandardControl<IInputs
                 disabled,
                 masked,
                 config: this._config,
+                defaultCountry: this.computeDefaultCountry(),
                 strings: this._strings,
                 onResult: this.onResult,
                 onCall: this.onCall,
             }),
             this._container
         );
+    }
+
+    // ── Pays par défaut ─────────────────────────────────────────────────────────
+    // Ordre de priorité : 1) champ lu via countryPath (recherche ou enregistrement courant)
+    //                     2) colonne defaultCountryColumn  3) valeur fixe defaultCountry  4) 1er pays de la liste
+    private param(name: string): LooseProperty | undefined {
+        return (this._context.parameters as unknown as Record<string, LooseProperty | undefined>)[name];
+    }
+
+    private computeDefaultCountry(): Country {
+        const column = this.param("defaultCountryColumn");
+        const columnValue = column ? column.formatted || column.raw : null;
+        return pickDefaultCountry(this._config.countries, [
+            this._pathCountry,
+            resolveCountryCode(columnValue),
+            this._config.staticDefaultCountry,
+        ]);
+    }
+
+    /** Relance la lecture Web API quand la recherche, le chemin ou l'enregistrement changent. */
+    private refreshPathCountry(): void {
+        const path = this._config.countryPath;
+        const webAPI = this._context.webAPI as ComponentFramework.WebApi | undefined;
+        let start: { entity: string; id: string } | null = null;
+
+        if (path && webAPI) {
+            const lookup = this.param("countryLookup");
+            const lookupConfigured = !!lookup && (lookup.raw != null || !!lookup.attributes?.LogicalName);
+            if (lookupConfigured) {
+                // Départ = l'enregistrement pointé par la recherche (valeur en direct du formulaire)
+                const first = Array.isArray(lookup.raw) && lookup.raw.length > 0
+                    ? (lookup.raw[0] as { id?: string; entityType?: string })
+                    : null;
+                if (first?.id && first.entityType) start = { entity: first.entityType, id: first.id };
+            } else {
+                // Départ = l'enregistrement courant : la table est détectée automatiquement
+                const info = (this._context.mode as unknown as { contextInfo?: ContextInfo }).contextInfo;
+                if (info?.entityId && info.entityTypeName) start = { entity: info.entityTypeName, id: info.entityId };
+            }
+        }
+
+        const key = start && path ? `${start.entity}:${start.id}|${path.join(".")}` : "";
+        if (key === this._pathKey) return;
+        this._pathKey = key;
+        const hadValue = this._pathCountry !== null;
+        this._pathCountry = null;
+        if (!start || !path || !webAPI) {
+            if (hadValue) this.render();
+            return;
+        }
+
+        readPath(webAPI, start.entity, start.id, path)
+            .then((value) => {
+                if (this._pathKey !== key) return; // une lecture plus récente a été lancée
+                this._pathCountry = resolveCountryCode(value);
+                this.render();
+            })
+            .catch(() => undefined); // champ inaccessible (droits, nom erroné) : on garde les autres sources
     }
 
     // ── Résultat de validation venant du composant ───────────────────────────
