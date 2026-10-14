@@ -3,7 +3,8 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import MobileInput, { MobileInputStrings, PhoneResult } from "./components/MobileInput";
 import { countries } from "./utils/countries";
-import { CallProvider, ControlConfig, readConfig } from "./utils/config";
+import { ControlConfig, readConfig } from "./utils/config";
+import { buildCallUrl } from "./utils/call";
 
 // setNotification / clearNotification existent à l'exécution dans les applications pilotées par modèle
 // mais ne sont pas typés (ni garantis) : on vérifie leur présence avant chaque appel.
@@ -25,16 +26,6 @@ interface ContextInfo {
 }
 
 const NOTIFICATION_ID = "os-mobile-invalid";
-
-export const buildCallUrl = (provider: CallProvider, customProtocol: string, e164: string): string | null => {
-    switch (provider) {
-        case "tel":    return `tel:${e164}`;
-        case "teams":  return `https://teams.microsoft.com/l/call/0/0?users=4:${encodeURIComponent(e164)}`;
-        case "skype":  return `skype:${e164}?call`;
-        case "custom": return customProtocol ? `${customProtocol}:${e164}` : null;
-        default:       return null;
-    }
-};
 
 export class MobileControl implements ComponentFramework.StandardControl<IInputs, IOutputs> {
     private _container: HTMLDivElement;
