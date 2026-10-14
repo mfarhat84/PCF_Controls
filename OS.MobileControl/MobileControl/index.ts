@@ -204,9 +204,10 @@ export class MobileControl implements ComponentFramework.StandardControl<IInputs
 
         readPath(webAPI, start.entity, start.id, path)
             .then((value) => {
-                if (this._pathKey !== key) return; // une lecture plus récente a été lancée
+                if (this._pathKey !== key) return false; // une lecture plus récente a été lancée
                 this._pathCountry = resolveCountryCode(value);
                 this.render();
+                return true;
             })
             .catch(() => undefined); // champ inaccessible (droits, nom erroné) : on garde les autres sources
     }

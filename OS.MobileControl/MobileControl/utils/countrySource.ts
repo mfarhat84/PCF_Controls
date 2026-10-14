@@ -88,6 +88,17 @@ export const parsePath = (path: string | null | undefined): string[] | null => {
   return segments.length > 0 && segments.every(isSafeName) ? segments : null;
 };
 
+/** Nom affiché d'une colonne de recherche. */
+const readLookupName = (
+  webAPI: ComponentFramework.WebApi,
+  entity: string,
+  id: string,
+  field: string
+): Promise<unknown> =>
+  webAPI
+    .retrieveRecord(entity, id, `?$select=_${field}_value`)
+    .then((rec) => rec[`_${field}_value${FORMATTED}`] ?? null);
+
 const readFinalField = (
   webAPI: ComponentFramework.WebApi,
   entity: string,
@@ -98,11 +109,7 @@ const readFinalField = (
     .retrieveRecord(entity, id, `?$select=${field}`)
     .then((rec) => rec[field + FORMATTED] ?? rec[field] ?? null)
     // Le champ final est peut-être lui-même une recherche → on lit son nom affiché.
-    .catch(() =>
-      webAPI
-        .retrieveRecord(entity, id, `?$select=_${field}_value`)
-        .then((rec) => rec[`_${field}_value${FORMATTED}`] ?? null)
-    );
+    .catch(() => readLookupName(webAPI, entity, id, field));
 
 export const readPath = (
   webAPI: ComponentFramework.WebApi,
